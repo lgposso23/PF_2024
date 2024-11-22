@@ -3,7 +3,9 @@ import torch
 import numpy as np
 from sort import Sort
 from facenet_pytorch import MTCNN
+from line_detection import detect_lines_in_video
 from PIL import Image
+
 
 # Verifica si tienes una GPU disponible
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -14,10 +16,6 @@ mtcnn = MTCNN(keep_all=True, device=device)
 
 # Inicializar el tracker Sort para el seguimiento de rostros
 tracker_face = Sort()
-
-# Coordenadas de las líneas para carril derecho e izquierdo
-line1_coordinates = [(84, 217), (129.5, 303.6), (175, 390), (220.5, 476.4), (266, 563), (295, 923)]
-line2_coordinates = [(230, 235), (303.8, 299.7), (377.6, 364.3), (451.4, 428.9), (525.2, 493.5), (609, 558), (688.8, 624.1), (709, 930)]
 
 # Función para encontrar el punto más cercano en cada línea
 def find_closest_points(center, line1_coords, line2_coords):
@@ -47,20 +45,27 @@ def find_closest_points(center, line1_coords, line2_coords):
 
     return 1 if distance_x_line1 < distance_x_line2 else 2
 
-# Procesar el video
-video_path = 'main_prueba.mp4'
-cap = cv2.VideoCapture(video_path)
+# --- CONFIGURACIÓN PARA VIDEO ---
+#video_path = 'ruta a tu video.mp4'
+#cap = cv2.VideoCapture(video_path)
+#fps = cap.get(cv2.CAP_PROP_FPS)
+#width, height = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+#output_path = 'donde lo quiras guardar.mp4'
+#fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+#out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+# --- CONFIGURACIÓN PARA WEBCAM ---
+# Si prefieres usar la webcam, descomenta la siguiente línea:
+cap = cv2.VideoCapture(0)
 fps = cap.get(cv2.CAP_PROP_FPS)
-width, height = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-output_path = 'prueba_result.mp4'
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
 # Variables para almacenar las posiciones anteriores y calcular velocidad
 prev_centers = {}
 show_bounding_boxes, show_points = True, True
 
-# Bucle para procesar el video
+line1_coordinates, line2_coordinates= detect_lines_in_video(video_path, seconds_inactive=2)
+
+# Bucle para procesar el video o la webcam
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
@@ -120,11 +125,13 @@ while cap.isOpened():
 
     # Mostrar frame procesado
     cv2.imshow('Face Detection & Tracking', frame)
-    out.write(frame)
+
+    # Si estás usando un video, guarda el frame procesado
+    #out.write(frame)
 
     if key == ord('q'):
         break
 
 cap.release()
-out.release()
+#out.release()
 cv2.destroyAllWindows()
