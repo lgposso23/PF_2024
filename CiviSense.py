@@ -48,11 +48,11 @@ def find_closest_points(center, line1_coords, line2_coords):
     return 1 if distance_x_line1 < distance_x_line2 else 2
 
 # Procesar el video
-video_path = 'C:/Users/Luisga/Documents/PF/pics/main_prueba.mp4'
+video_path = 'pics/main_prueba.mp4'
 cap = cv2.VideoCapture(video_path)
 fps = cap.get(cv2.CAP_PROP_FPS)
 width, height = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-output_path = 'C:/Users/Luisga/Documents/PF/pics/carril_prueba.mp4'
+output_path = 'pics/prueba_result.mp4'
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
