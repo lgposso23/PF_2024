@@ -1,0 +1,8 @@
+opencv-python
+torch
+numpy
+facenet-pytorch
+Pillow
+matplotlib
+scikit-image
+filterpy
