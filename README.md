@@ -1,1 +1,1 @@
-The main code is CiviSense.py before running it, download and place the following test video in the same folder to verify that everything works correctly. Link to the video: https://drive.google.com/file/d/1_B-_4hbIGr3w3Mkwzc_IjQ9CPTdfMtWZ/view?usp=sharing
+
